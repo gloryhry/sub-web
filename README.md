@@ -2,6 +2,8 @@
 
 基于 vue-cli 与 [tindy2013/subconverter](https://github.com/tindy2013/subconverter) 后端实现的配置自动生成。
 
+**该仓库后端已替换为自己部署的后端服务，无法保证可用性和安全性**
+
 ## Table of Contents
 
 - [ChangeLog](#ChangeLog)

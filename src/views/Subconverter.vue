@@ -90,21 +90,22 @@
                     <el-popover placement="bottom" v-model="form.extraset">
                       <el-row :gutter="10">
                         <el-col :span="12"><el-checkbox v-model="form.emoji" label="Emoji"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.new_name" label="Clash新字段名"></el-checkbox></el-col>                        
+                        <el-col :span="12"><el-checkbox v-model="form.new_name" label="Clash新字段名"></el-checkbox></el-col>
                       </el-row>
                       <el-row :gutter="10">
                         <el-col :span="12"><el-checkbox v-model="form.udp" @change="needUdp = true" label="启用 UDP"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.tfo" label="启用 TFO"></el-checkbox></el-col>                        
+                        <el-col :span="12"><el-checkbox v-model="form.tfo" label="启用 TFO"></el-checkbox></el-col>
+                      </el-row>
                       <el-row>
                         <el-checkbox v-model="form.scv" label="跳过证书验证"></el-checkbox>
                       </el-row>
                       <el-row :gutter="10">
                         <el-col :span="12"><el-checkbox v-model="form.appendType" label="插入节点类型"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.sort" label="排序节点"></el-checkbox></el-col>                        
+                        <el-col :span="12"><el-checkbox v-model="form.sort" label="排序节点"></el-checkbox></el-col>
                       </el-row>
                       <el-row :gutter="10">
                         <el-col :span="12"><el-checkbox v-model="form.fdn" label="过滤不支持节点"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.expand" label="展开规则全文"></el-checkbox></el-col>                        
+                        <el-col :span="12"><el-checkbox v-model="form.expand" label="展开规则全文"></el-checkbox></el-col>
                       </el-row>
                       <el-button slot="reference">更多选项</el-button>
                     </el-popover>
@@ -222,7 +223,7 @@ const project = process.env.VUE_APP_PROJECT
 const remoteConfigSample = process.env.VUE_APP_SUBCONVERTER_REMOTE_CONFIG
 const gayhubRelease = process.env.VUE_APP_BACKEND_RELEASE
 const defaultBackend = process.env.VUE_APP_SUBCONVERTER_DEFAULT_BACKEND + '/sub?'
-const shortUrlBackend = process.env.VUE_APP_MYURLS_DEFAULT_BACKEND + '/short'
+const shortUrlBackend = process.env.VUE_APP_MYURLS_DEFAULT_BACKEND
 const configUploadBackend = process.env.VUE_APP_CONFIG_UPLOAD_BACKEND + '/config/upload'
 const tgBotLink = process.env.VUE_APP_BOT_LINK
 
@@ -682,23 +683,40 @@ export default {
 
       this.loading = true;
 
-      let data = new FormData();
-      data.append("longUrl", btoa(this.customSubUrl));
+      const requestData = {
+        url: this.customSubUrl
+      };
 
       this.$axios
-        .post(shortUrlBackend, data, {
-          header: {
-            "Content-Type": "application/form-data; charset=utf-8"
+        .post(`${shortUrlBackend}/api/link/create`, requestData, {
+          headers: {
+            "Authorization": "Bearer GlorySink",
+            "Content-Type": "application/json"
           }
         })
         .then(res => {
-          if (res.data.Code === 1 && res.data.ShortUrl !== "") {
-            this.curtomShortSubUrl = res.data.ShortUrl;
-            this.$copyText(res.data.ShortUrl);
+          /* eslint-disable no-console */
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('[Sink Service]', shortUrlBackend);
+            console.log('[Request Body]', requestData);
+            console.log('[Response]', res.data);
+          }
+          
+          if (res.status === 201 && res.data.link) {
+            const shortUrl = `${shortUrlBackend}/${res.data.link.slug || res.data.link.id}`;
+            if (process.env.NODE_ENV !== 'production') {
+              console.log('[Generated Short URL]', shortUrl);
+            }
+            this.curtomShortSubUrl = shortUrl;
+            this.$copyText(shortUrl);
             this.$message.success("短链接已复制到剪贴板");
           } else {
-            this.$message.error("短链接获取失败：" + res.data.Message);
+            if (process.env.NODE_ENV !== 'production') {
+              console.error('[Error] Failed to create short URL:', res);
+            }
+            this.$message.error("短链接获取失败");
           }
+          /* eslint-enable no-console */
         })
         .catch(() => {
           this.$message.error("短链接获取失败");

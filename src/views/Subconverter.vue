@@ -690,8 +690,8 @@ export default {
       this.$axios
         .post(`${shortUrlBackend}/api/link/create`, requestData, {
           headers: {
-            "Authorization": "Bearer GlorySink",
-            "Content-Type": "application/json"
+            "authorization": "Bearer GlorySink",
+            "Content-Type": "application/json;charset=utf-8"
           }
         })
         .then(res => {

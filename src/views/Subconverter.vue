@@ -256,11 +256,11 @@ export default {
           "自动判断客户端": "auto",
         },
         customBackend: {
-          "localhost:25500 本地版": "http://localhost:25500/sub?",
+          "sub.985100.xyz": "https://sub.985100.xyz/sub?",
           "sub.hzbz.edu.eu.org": "https://sub.hzbz.edu.eu.org/sub?",
         },
         backendOptions: [
-          { value: "http://localhost:25500/sub?" },
+          { value: "https://sub.985100.xyz/sub?" },
           { value: "https://sub.hzbz.edu.eu.org/sub?" },
         ],
         remoteConfig: [

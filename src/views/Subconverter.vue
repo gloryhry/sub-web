@@ -256,10 +256,12 @@ export default {
           "自动判断客户端": "auto",
         },
         customBackend: {
+          "subconverter.985100.xyz": "https://subconverter.985100.xyz/sub?",
           "sub.985100.xyz": "https://sub.985100.xyz/sub?",
           "sub.hzbz.edu.eu.org": "https://sub.hzbz.edu.eu.org/sub?",
         },
         backendOptions: [
+          { value: "https://subconverter.985100.xyz/sub?" },
           { value: "https://sub.985100.xyz/sub?" },
           { value: "https://sub.hzbz.edu.eu.org/sub?" },
         ],
